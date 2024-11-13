@@ -1,14 +1,17 @@
-import "./App.css";
-import { Button } from "@/components/ui/button";
-import { HStack } from "@chakra-ui/react";
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Register from "./components/Register";
+import Login from "./components/Login";
 
-function App() {
+const App: React.FC = () => {
   return (
-    <HStack>
-      <Button>Click me</Button>
-      <Button>Click me</Button>
-    </HStack>
+    <Router>
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
