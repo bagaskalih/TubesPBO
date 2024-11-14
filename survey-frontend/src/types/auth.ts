@@ -5,5 +5,6 @@ export interface AuthData {
 }
 
 export interface AuthResponse {
-  token: string;
+  id: string;
+  role: string;
 }

@@ -17,7 +17,9 @@ const Login = () => {
     e.preventDefault();
     try {
       const response = await login(formData);
-      console.log(response);
+      localStorage.setItem("id", response.id);
+      console.log(localStorage.getItem("id"));
+      window.location.href = "/";
     } catch (error) {
       console.error(error);
     }
