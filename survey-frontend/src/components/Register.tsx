@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box, TextField, Button, Typography, Alert } from "@mui/material";
 import { register } from "../api/auth";
 import { AuthData } from "../types/auth";
+import { AuthError } from "../types/auth";
+import { AxiosError } from "axios";
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState<AuthData>({
@@ -10,6 +12,7 @@ const RegisterPage = () => {
     role: "USER",
   });
 
+  const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,10 +23,18 @@ const RegisterPage = () => {
     e.preventDefault();
     try {
       await register(formData);
-      setMessage("Registration successful!");
+      setMessage("Registration successful. Please login.");
+      setError("");
     } catch (error) {
-      console.error(error);
-      setMessage("Registration failed");
+      if (error instanceof AxiosError && error.response?.data) {
+        const errorData = error.response.data as AuthError;
+        setError(errorData.message || "Username already exists");
+        setMessage("");
+      } else if (error instanceof AxiosError && error.request) {
+        setError("Network error. Please try again later.");
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -95,6 +106,13 @@ const RegisterPage = () => {
           {message}
         </Typography>
       )}
+
+      {error && (
+        <Alert severity="error" sx={{ width: "25%", mt: 3 }}>
+          {error}
+        </Alert>
+      )}
+
       <Typography variant="body1" color="textSecondary">
         Already have an account? <a href="/login">Login</a>
       </Typography>

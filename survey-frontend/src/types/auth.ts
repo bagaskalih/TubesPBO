@@ -8,3 +8,7 @@ export interface AuthResponse {
   id: string;
   role: string;
 }
+
+export interface AuthError {
+  message: string;
+}

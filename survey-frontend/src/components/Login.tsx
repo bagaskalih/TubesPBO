@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography } from "@mui/material";
+import { Box, TextField, Button, Typography, Alert } from "@mui/material";
 import { login } from "../api/auth";
-import { AuthData } from "../types/auth";
+import { AuthData, AuthError } from "../types/auth";
+import { AxiosError } from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState<AuthData>({
@@ -9,19 +10,33 @@ const Login = () => {
     password: "",
   });
 
+  const [error, setError] = useState<string>("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    if (error) {
+      setError("");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const response = await login(formData);
+
       localStorage.setItem("id", response.id);
-      console.log(localStorage.getItem("id"));
+      // console.log(localStorage.getItem("id"));
       window.location.href = "/";
     } catch (error) {
-      console.error(error);
+      if (error instanceof AxiosError && error.response?.data) {
+        const errorData = error.response.data as AuthError;
+        setError(errorData.message || "Invalid credentials");
+      } else if (error instanceof AxiosError && error.request) {
+        setError("Network error. Please try again later.");
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
@@ -52,6 +67,11 @@ const Login = () => {
         <Typography variant="h4" gutterBottom>
           Sign In
         </Typography>
+        {error && (
+          <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
+            {error}
+          </Alert>
+        )}
         <TextField
           variant="outlined"
           margin="normal"
