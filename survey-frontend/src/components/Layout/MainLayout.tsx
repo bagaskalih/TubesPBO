@@ -24,7 +24,6 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           flexGrow: 1,
           p: 3,
           mt: 8,
-          ml: "240px",
         }}
       >
         {children}

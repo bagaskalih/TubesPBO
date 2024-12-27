@@ -1,9 +1,44 @@
 import React, { useState } from "react";
-import { Box, TextField, Button, Typography, Alert } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  Paper,
+} from "@mui/material";
 import { register } from "../api/auth";
-import { AuthData } from "../types/auth";
-import { AuthError } from "../types/auth";
+import { AuthData, AuthError } from "../types/auth";
 import { AxiosError } from "axios";
+
+const AuthLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        backgroundColor: "#f4f6f8",
+        padding: 2,
+      }}
+    >
+      <Paper
+        elevation={6}
+        sx={{
+          width: "400px",
+          padding: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        {children}
+      </Paper>
+    </Box>
+  );
+};
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState<AuthData>({
@@ -11,7 +46,6 @@ const RegisterPage = () => {
     password: "",
     role: "USER",
   });
-
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
@@ -39,32 +73,21 @@ const RegisterPage = () => {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-      }}
-    >
-      <Box
-        component="form"
-        onSubmit={handleSubmit}
-        sx={{
-          mt: 3,
-          border: "1px solid black",
-          display: "flex",
-          width: "25%",
-          padding: "60px 20px",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Sign Up
-        </Typography>
+    <AuthLayout>
+      <Typography variant="h4" gutterBottom>
+        Sign Up
+      </Typography>
+      {message && (
+        <Alert severity="success" sx={{ width: "100%", mb: 2 }}>
+          {message}
+        </Alert>
+      )}
+      {error && (
+        <Alert severity="error" sx={{ width: "100%", mb: 2 }}>
+          {error}
+        </Alert>
+      )}
+      <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
         <TextField
           variant="outlined"
           margin="normal"
@@ -101,22 +124,10 @@ const RegisterPage = () => {
           Register
         </Button>
       </Box>
-      {message && (
-        <Typography variant="body1" color="textSecondary">
-          {message}
-        </Typography>
-      )}
-
-      {error && (
-        <Alert severity="error" sx={{ width: "25%", mt: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      <Typography variant="body1" color="textSecondary">
+      <Typography variant="body1" sx={{ mt: 2 }} color="textSecondary">
         Already have an account? <a href="/login">Login</a>
       </Typography>
-    </Box>
+    </AuthLayout>
   );
 };
 
