@@ -1,4 +1,3 @@
-// src/main/java/com/kelompok2/survey_backend/controllers/AuthController.java
 package com.kelompok2.survey_backend.controllers;
 
 import com.kelompok2.survey_backend.dto.AuthResponseDto;
