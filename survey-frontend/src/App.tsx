@@ -10,6 +10,8 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import LandingPage from "./components/LandingPage";
 import axios from "axios";
+import AdminDashboard from "./components/Dashboard/AdminDashboard";
+import UserDashboard from "./components/UserDashboard";
 
 interface User {
   username: string;
@@ -57,6 +59,21 @@ const App: React.FC = () => {
           element={
             user ? (
               <LandingPage username={user.username} role={user.role} />
+            ) : (
+              // <Navigate to="/login" replace />
+              <LandingPage username={""} role={""} />
+            )
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            user ? (
+              user.role === "ADMIN" ? (
+                <AdminDashboard username={user.username} role={user.role} />
+              ) : (
+                <UserDashboard username={user.username} role={user.role} />
+              )
             ) : (
               <Navigate to="/login" replace />
             )
