@@ -10,7 +10,7 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import LandingPage from "./components/LandingPage";
 import axios from "axios";
-import UserDashboard from "./components/UserDashboard";
+import UserDashboard from "./components/Dashboard";
 import SurveyManagement from "./components/Survey/SurveyManagement";
 import CreateSurvey from "./components/Survey/CreateSurvey";
 
