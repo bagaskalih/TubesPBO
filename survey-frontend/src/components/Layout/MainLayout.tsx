@@ -9,15 +9,11 @@ interface MainLayoutProps {
   role: string;
 }
 
-const MainLayout: React.FC<MainLayoutProps> = ({
-  children,
-  username,
-  role,
-}) => {
+const MainLayout: React.FC<MainLayoutProps> = ({ children, username }) => {
   return (
     <Box sx={{ display: "flex" }}>
       <Header username={username} />
-      <Sidebar role={role} />
+      <Sidebar />
       <Box
         component="main"
         sx={{
