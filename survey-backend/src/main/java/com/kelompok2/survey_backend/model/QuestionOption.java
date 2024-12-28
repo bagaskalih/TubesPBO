@@ -6,21 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "question_options")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class QuestionOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "option_text")
+    private String optionText;
+
+    @Column(name = "order_number")
+    private Integer orderNumber;
+
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
-
-    @Column(name = "option_text")
-    private String optionText;
 }

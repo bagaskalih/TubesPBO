@@ -6,13 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
 @Entity
 @Table(name = "survey_responses")
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class SurveyResponse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +24,12 @@ public class SurveyResponse {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "started_at")
     private LocalDateTime startedAt;
+
+    @Column(name = "completed_at")
     private LocalDateTime completedAt;
+
+    @OneToMany(mappedBy = "response", cascade = CascadeType.ALL)
+    private List<AnswerRecord> answers;
 }
