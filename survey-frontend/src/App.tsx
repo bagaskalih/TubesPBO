@@ -10,8 +10,9 @@ import Register from "./components/Register";
 import Login from "./components/Login";
 import LandingPage from "./components/LandingPage";
 import axios from "axios";
-import AdminDashboard from "./components/Dashboard/AdminDashboard";
 import UserDashboard from "./components/UserDashboard";
+import SurveyManagement from "./components/Survey/SurveyManagement";
+import CreateSurvey from "./components/Survey/CreateSurvey";
 
 interface User {
   username: string;
@@ -67,15 +68,25 @@ const App: React.FC = () => {
         />
         <Route
           path="/dashboard"
+          element={user ? <UserDashboard /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/surveys"
           element={
-            user ? (
-              user.role === "ADMIN" ? (
-                <AdminDashboard username={user.username} role={user.role} />
-              ) : (
-                <UserDashboard username={user.username} role={user.role} />
-              )
+            user?.role === "ADMIN" ? (
+              <SurveyManagement username={user.username} role={user.role} />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/dashboard" replace />
+            )
+          }
+        />
+        <Route
+          path="/surveys/create"
+          element={
+            user?.role === "ADMIN" ? (
+              <CreateSurvey username={user.username} role={user.role} />
+            ) : (
+              <Navigate to="/dashboard" replace />
             )
           }
         />
