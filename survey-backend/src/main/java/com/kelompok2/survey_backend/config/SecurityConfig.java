@@ -27,7 +27,9 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(new AntPathRequestMatcher("/api/auth/**")).permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll() // Temporarily permit all user endpoints
+                        .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/categories")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/surveys/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(basic -> basic.disable())
