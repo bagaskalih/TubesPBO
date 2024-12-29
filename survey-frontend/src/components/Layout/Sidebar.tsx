@@ -62,7 +62,7 @@ const Sidebar = () => {
 
   const menuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-    { text: "Surveys", icon: <SurveyIcon />, path: "/surveys" },
+    { text: "Surveys", icon: <SurveyIcon />, path: "/admin/surveys" },
     ...(userRole === "ADMIN"
       ? [{ text: "User Management", icon: <PeopleIcon />, path: "/users" }]
       : []),

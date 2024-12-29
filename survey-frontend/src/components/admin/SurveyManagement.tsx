@@ -15,6 +15,8 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
 import axios from "axios";
@@ -49,6 +51,15 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success" as "success" | "error",
+  });
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   useEffect(() => {
     fetchSurveys();
@@ -66,9 +77,7 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8081/api/surveys/categories"
-      );
+      const response = await axios.get("http://localhost:8081/api/categories");
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -80,8 +89,18 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
       try {
         await axios.delete(`http://localhost:8081/api/surveys/${id}`);
         fetchSurveys();
+        setSnackbar({
+          open: true,
+          message: "Survey deleted successfully",
+          severity: "success",
+        });
       } catch (error) {
         console.error("Error deleting survey:", error);
+        setSnackbar({
+          open: true,
+          message: "Error deleting survey",
+          severity: "error",
+        });
       }
     }
   };
@@ -196,6 +215,16 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
           </Table>
         </TableContainer>
       </Box>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert severity={snackbar.severity} onClose={handleCloseSnackbar}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </MainLayout>
   );
 };

@@ -18,6 +18,7 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import MainLayout from "../Layout/MainLayout";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 interface Question {
   id?: number;
@@ -52,6 +53,7 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
   const [durationMinutes, setDurationMinutes] = useState(30);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     fetchCategories();
@@ -62,9 +64,7 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8081/api/surveys/categories"
-      );
+      const response = await axios.get("http://localhost:8081/api/categories");
       setCategories(response.data);
     } catch (error) {
       console.error("Error fetching categories:", error);
@@ -153,13 +153,16 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
 
       if (id) {
         await axios.put(`http://localhost:8081/api/surveys/${id}`, surveyData);
+        showSnackbar("Survey updated successfully", "success");
       } else {
         await axios.post("http://localhost:8081/api/surveys", surveyData);
+        showSnackbar("Survey created successfully", "success");
       }
 
       navigate("/admin/surveys");
     } catch (error) {
       console.error("Error saving survey:", error);
+      showSnackbar("Error saving survey", "error");
     }
   };
 
