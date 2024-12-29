@@ -11,8 +11,9 @@ import Login from "./components/Login";
 import LandingPage from "./components/LandingPage";
 import axios from "axios";
 import UserDashboard from "./components/Dashboard";
-import SurveyManagement from "./components/Survey/SurveyManagement";
-import CreateSurvey from "./components/Survey/CreateSurvey";
+import SurveyManagement from "./components/admin/SurveyManagement";
+import SurveyEditor from "./components/admin/SurveyEditor";
+import { SnackbarProvider } from "./context/SnackbarContext";
 
 interface User {
   username: string;
@@ -51,47 +52,62 @@ const App: React.FC = () => {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route
-          path="/"
-          element={
-            user ? (
-              <LandingPage username={user.username} role={user.role} />
-            ) : (
-              // <Navigate to="/login" replace />
-              <LandingPage username={""} role={""} />
-            )
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={user ? <UserDashboard /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/surveys"
-          element={
-            user?.role === "ADMIN" ? (
-              <SurveyManagement username={user.username} role={user.role} />
-            ) : (
-              <Navigate to="/dashboard" replace />
-            )
-          }
-        />
-        <Route
-          path="/surveys/create"
-          element={
-            user?.role === "ADMIN" ? (
-              <CreateSurvey username={user.username} role={user.role} />
-            ) : (
-              <Navigate to="/dashboard" replace />
-            )
-          }
-        />
-      </Routes>
-    </Router>
+    <SnackbarProvider>
+      <Router>
+        <Routes>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              user ? (
+                <LandingPage username={user.username} role={user.role} />
+              ) : (
+                // <Navigate to="/login" replace />
+                <LandingPage username={""} role={""} />
+              )
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              user ? <UserDashboard /> : <Navigate to="/login" replace />
+            }
+          />
+
+          <Route
+            path="/admin/surveys"
+            element={
+              user && user.role === "ADMIN" ? (
+                <SurveyManagement username={user.username} role={user.role} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/admin/surveys/create"
+            element={
+              user && user.role === "ADMIN" ? (
+                <SurveyEditor username={user.username} role={user.role} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/admin/surveys/edit/:id"
+            element={
+              user && user.role === "ADMIN" ? (
+                <SurveyEditor username={user.username} role={user.role} />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+        </Routes>
+      </Router>
+    </SnackbarProvider>
   );
 };
 
