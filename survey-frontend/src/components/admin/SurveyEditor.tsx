@@ -12,6 +12,7 @@ import {
   Card,
   CardContent,
   Grid,
+  FormHelperText,
 } from "@mui/material";
 import { Add, Delete, DragHandle } from "@mui/icons-material";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
@@ -140,7 +141,119 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
     setQuestions(newQuestions);
   };
 
+  const [errors, setErrors] = useState({
+    title: "",
+    description: "",
+    category: "",
+    duration: "",
+    questions: {} as {
+      [key: number]: {
+        text?: string;
+        options?: { [key: number]: string };
+      };
+    },
+  });
+
+  const validateForm = () => {
+    const newErrors = {
+      title: "",
+      description: "",
+      category: "",
+      duration: "",
+      questions: {} as typeof errors.questions,
+    };
+    let hasError = false;
+
+    if (!title.trim()) {
+      newErrors.title = "Title is required";
+      hasError = true;
+    }
+
+    if (!description.trim()) {
+      newErrors.description = "Description is required";
+      hasError = true;
+    }
+
+    if (!categoryId) {
+      newErrors.category = "Category is required";
+      hasError = true;
+    }
+
+    if (!durationMinutes || durationMinutes <= 0) {
+      newErrors.duration = "Valid duration is required";
+      hasError = true;
+    }
+
+    questions.forEach((question, index) => {
+      newErrors.questions[index] = {};
+
+      if (!question.questionText.trim()) {
+        newErrors.questions[index].text = "Question text is required";
+        hasError = true;
+      }
+
+      if (question.questionType === "MULTIPLE_CHOICE") {
+        if (question.options.length < 2) {
+          newErrors.questions[index].text = "At least 2 options required";
+          hasError = true;
+        }
+
+        question.options.forEach((option, optIndex) => {
+          if (!option.optionText.trim()) {
+            if (!newErrors.questions[index].options) {
+              newErrors.questions[index].options = {};
+            }
+            newErrors.questions[index].options![optIndex] =
+              "Option text required";
+            hasError = true;
+          }
+        });
+      }
+    });
+
+    setErrors(newErrors);
+    return !hasError;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      showSnackbar("Please fix the errors before submitting", "error");
+      return;
+    }
+    const errors = [];
+
+    if (!title.trim()) errors.push("Title is required");
+    if (!description.trim()) errors.push("Description is required");
+    if (!categoryId) errors.push("Category is required");
+    if (questions.length === 0)
+      errors.push("At least one question is required");
+
+    questions.forEach((question, index) => {
+      if (!question.questionText.trim()) {
+        errors.push(`Question ${index + 1} text is required`);
+      }
+      if (
+        question.questionType === "MULTIPLE_CHOICE" &&
+        question.options.length < 2
+      ) {
+        errors.push(`Question ${index + 1} must have at least 2 options`);
+      }
+      if (question.questionType === "MULTIPLE_CHOICE") {
+        question.options.forEach((option, optIndex) => {
+          if (!option.optionText.trim()) {
+            errors.push(
+              `Option ${optIndex + 1} in Question ${index + 1} is required`
+            );
+          }
+        });
+      }
+    });
+
+    if (errors.length > 0) {
+      showSnackbar(errors.join(", "), "error");
+      return;
+    }
+
     try {
       const surveyData = {
         id: id ? parseInt(id) : undefined,
@@ -194,6 +307,8 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
               label="Survey Title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              error={!!errors.title}
+              helperText={errors.title}
             />
           </Grid>
           <Grid item xs={12}>
@@ -204,10 +319,12 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
               label="Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
+              error={!!errors.description}
+              helperText={errors.description}
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            <FormControl fullWidth>
+            <FormControl fullWidth error={!!errors.category}>
               <InputLabel>Category</InputLabel>
               <Select
                 value={categoryId}
@@ -220,6 +337,9 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
                   </MenuItem>
                 ))}
               </Select>
+              {errors.category && (
+                <FormHelperText>{errors.category}</FormHelperText>
+              )}
             </FormControl>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -290,6 +410,8 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
                                       e.target.value
                                     )
                                   }
+                                  error={!!errors.questions[index]?.text}
+                                  helperText={errors.questions[index]?.text}
                                 />
                               </Grid>
                               <Grid item xs={12}>
@@ -336,6 +458,16 @@ const SurveyEditor: React.FC<SurveyEditorProps> = ({ username, role }) => {
                                           optionIndex,
                                           e.target.value
                                         )
+                                      }
+                                      error={
+                                        !!errors.questions[index]?.options?.[
+                                          optionIndex
+                                        ]
+                                      }
+                                      helperText={
+                                        errors.questions[index]?.options?.[
+                                          optionIndex
+                                        ]
                                       }
                                     />
                                     <IconButton
