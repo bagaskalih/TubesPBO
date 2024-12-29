@@ -109,7 +109,7 @@ const UserDashboard: React.FC = () => {
                     </Typography>
                     <Button
                       variant="outlined"
-                      onClick={() => navigate("/my-surveys")}
+                      onClick={() => navigate("/surveys/history")}
                       sx={{ mt: 2 }}
                     >
                       View History
@@ -170,7 +170,7 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate("/manage-surveys")}
+              onClick={() => navigate("/admin/surveys")}
               sx={{ mt: 2 }}
             >
               Manage Surveys
