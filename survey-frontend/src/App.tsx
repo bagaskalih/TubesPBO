@@ -14,6 +14,9 @@ import UserDashboard from "./components/Dashboard";
 import SurveyManagement from "./components/admin/SurveyManagement";
 import SurveyEditor from "./components/admin/SurveyEditor";
 import { SnackbarProvider } from "./context/SnackbarContext";
+import SurveyList from "./components/user/SurveyList";
+import TakeSurvey from "./components/user/TakeSurvey";
+import SurveyHistory from "./components/user/SurveyHistory";
 
 interface User {
   username: string;
@@ -105,6 +108,47 @@ const App: React.FC = () => {
               )
             }
           />
+          {/* User Routes */}
+          <Route
+            path="/surveys"
+            element={
+              user ? (
+                <SurveyList username={user.username} role={user.role} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/surveys/take/:id"
+            element={
+              user ? (
+                <TakeSurvey username={user.username} role={user.role} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          <Route
+            path="/surveys/history"
+            element={
+              user ? (
+                <SurveyHistory username={user.username} role={user.role} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+          {/* <Route
+            path="/rankings"
+            element={
+              user ? (
+                <Rankings username={user.username} role={user.role} />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          /> */}
         </Routes>
       </Router>
     </SnackbarProvider>
