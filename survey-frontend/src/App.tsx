@@ -18,6 +18,9 @@ import SurveyList from "./components/user/SurveyList";
 import TakeSurvey from "./components/user/TakeSurvey";
 import SurveyHistory from "./components/user/SurveyHistory";
 import Rankings from "./components/Rankings";
+import NotFound from "./components/common/NotFound";
+import ErrorBoundary from "./components/common/ErrorBoundary";
+import UserManagement from "./components/admin/UserManagement";
 
 interface User {
   username: string;
@@ -56,103 +59,119 @@ const App: React.FC = () => {
   }
 
   return (
-    <SnackbarProvider>
-      <Router>
-        <Routes>
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/"
-            element={
-              user ? (
-                <LandingPage username={user.username} role={user.role} />
-              ) : (
-                // <Navigate to="/login" replace />
-                <LandingPage username={""} role={""} />
-              )
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              user ? <UserDashboard /> : <Navigate to="/login" replace />
-            }
-          />
+    <ErrorBoundary>
+      <SnackbarProvider>
+        <Router>
+          <Routes>
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route
+              path="/"
+              element={
+                user ? (
+                  <LandingPage username={user.username} role={user.role} />
+                ) : (
+                  // <Navigate to="/login" replace />
+                  <LandingPage username={""} role={""} />
+                )
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                user ? <UserDashboard /> : <Navigate to="/login" replace />
+              }
+            />
 
-          <Route
-            path="/admin/surveys"
-            element={
-              user && user.role === "ADMIN" ? (
-                <SurveyManagement username={user.username} role={user.role} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/surveys/create"
-            element={
-              user && user.role === "ADMIN" ? (
-                <SurveyEditor username={user.username} role={user.role} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          <Route
-            path="/admin/surveys/edit/:id"
-            element={
-              user && user.role === "ADMIN" ? (
-                <SurveyEditor username={user.username} role={user.role} />
-              ) : (
-                <Navigate to="/login" replace />
-              )
-            }
-          />
-          {/* User Routes */}
-          <Route
-            path="/surveys"
-            element={
-              user ? (
-                <SurveyList username={user.username} role={user.role} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route
-            path="/surveys/take/:id"
-            element={
-              user ? (
-                <TakeSurvey username={user.username} role={user.role} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route
-            path="/surveys/history"
-            element={
-              user ? (
-                <SurveyHistory username={user.username} role={user.role} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-          <Route
-            path="/rankings"
-            element={
-              user ? (
-                <Rankings username={user.username} role={user.role} />
-              ) : (
-                <Navigate to="/login" />
-              )
-            }
-          />
-        </Routes>
-      </Router>
-    </SnackbarProvider>
+            {/* Admin Routes */}
+            <Route
+              path="/admin/surveys"
+              element={
+                user && user.role === "ADMIN" ? (
+                  <SurveyManagement username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/surveys/create"
+              element={
+                user && user.role === "ADMIN" ? (
+                  <SurveyEditor username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+            <Route
+              path="/admin/surveys/edit/:id"
+              element={
+                user && user.role === "ADMIN" ? (
+                  <SurveyEditor username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+
+            <Route
+              path="/admin/users"
+              element={
+                user && user.role === "ADMIN" ? (
+                  <UserManagement username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" replace />
+                )
+              }
+            />
+
+            {/* User Routes */}
+            <Route
+              path="/surveys"
+              element={
+                user ? (
+                  <SurveyList username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/surveys/take/:id"
+              element={
+                user ? (
+                  <TakeSurvey username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/surveys/history"
+              element={
+                user ? (
+                  <SurveyHistory username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route
+              path="/rankings"
+              element={
+                user ? (
+                  <Rankings username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </SnackbarProvider>
+    </ErrorBoundary>
   );
 };
 
