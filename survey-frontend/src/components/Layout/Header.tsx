@@ -38,9 +38,9 @@ const Header: React.FC<HeaderProps> = ({ username }) => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: 1200 }}>
+    <AppBar position="fixed" sx={{ zIndex: 1201 }}>
       <Toolbar>
-        <Box sx={{ flexGrow: 0, ml: 7 }}>
+        <Box sx={{ flexGrow: 0 }}>
           <Typography
             variant="h6"
             component="div"
