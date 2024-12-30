@@ -6,8 +6,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Register from "./components/Register";
-import Login from "./components/Login";
+import Register from "./components/auth/Register";
+import Login from "./components/auth/Login";
 import LandingPage from "./components/LandingPage";
 import axios from "axios";
 import UserDashboard from "./components/Dashboard";
@@ -21,6 +21,7 @@ import Rankings from "./components/Rankings";
 import NotFound from "./components/common/NotFound";
 import ErrorBoundary from "./components/common/ErrorBoundary";
 import UserManagement from "./components/admin/UserManagement";
+import UserBioView from "./components/admin/UserBioView";
 
 interface User {
   username: string;
@@ -168,6 +169,16 @@ const App: React.FC = () => {
               }
             />
             <Route path="*" element={<NotFound />} />
+            <Route
+              path="/admin/users/profiles"
+              element={
+                user ? (
+                  <UserBioView username={user.username} role={user.role} />
+                ) : (
+                  <Navigate to="/login" />
+                )
+              }
+            />
           </Routes>
         </Router>
       </SnackbarProvider>
