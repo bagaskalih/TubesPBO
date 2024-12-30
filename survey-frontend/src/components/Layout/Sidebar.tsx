@@ -43,7 +43,11 @@ const Sidebar = () => {
     ...(userRole === "ADMIN"
       ? [
           { text: "User Management", icon: <PeopleIcon />, path: "/users" },
-          { text: "Surveys", icon: <SurveyIcon />, path: "/admin/surveys" },
+          {
+            text: "Survey Management",
+            icon: <SurveyIcon />,
+            path: "/admin/surveys",
+          },
         ]
       : [{ text: "Surveys", icon: <SurveyIcon />, path: "/surveys" }]),
   ];
