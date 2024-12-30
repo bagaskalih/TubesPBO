@@ -10,7 +10,10 @@ import java.util.List;
 
 @Entity
 @Table(name = "surveys")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Survey {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,6 +21,9 @@ public class Survey {
     private String title;
     private String description;
     private Integer durationMinutes;
+
+    @Column(name = "response_count")
+    private Integer responseCount;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

@@ -37,9 +37,15 @@ public class SurveyServiceImpl implements SurveyService {
 
     @Override
     public List<SurveyDto> getAllSurveys() {
-        return surveyRepository.findAll().stream()
+        List<SurveyDto> surveyRepo = surveyRepository.findAll().stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+
+        for (SurveyDto survey : surveyRepo) {
+            survey.setResponseCount(surveyResponseRepository.countBySurveyId(survey.getId()));
+        }
+
+        return surveyRepo;
     }
 
     @Override
@@ -129,6 +135,7 @@ public class SurveyServiceImpl implements SurveyService {
                 survey.getDescription(),
                 survey.getCategory() != null ? survey.getCategory().getId() : null,
                 survey.getDurationMinutes(),
+                survey.getResponseCount(),
                 survey.getQuestions().stream()
                         .map(this::mapQuestionToDto)
                         .collect(Collectors.toList()),

@@ -16,6 +16,7 @@ public class SurveyDto {
     private String description;
     private Long categoryId;
     private Integer durationMinutes;
+    private Integer responseCount;
     private List<QuestionDto> questions;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

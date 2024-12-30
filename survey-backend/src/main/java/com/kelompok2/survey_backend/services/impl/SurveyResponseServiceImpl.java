@@ -100,6 +100,7 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
                 survey.getDescription(),
                 survey.getCategory().getId(),
                 survey.getDurationMinutes(),
+                survey.getResponseCount(),
                 mapQuestionsToDto(survey.getQuestions()),
                 survey.getCreatedAt(),
                 survey.getUpdatedAt()
