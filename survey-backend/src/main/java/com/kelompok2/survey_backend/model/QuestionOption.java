@@ -9,11 +9,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "question_options")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class QuestionOption {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class QuestionOption extends BaseEntity {
     @Column(name = "option_text")
     private String optionText;
 

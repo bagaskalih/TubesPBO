@@ -11,11 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "survey_responses")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-public class SurveyResponse {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class SurveyResponse extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "survey_id")
     private Survey survey;

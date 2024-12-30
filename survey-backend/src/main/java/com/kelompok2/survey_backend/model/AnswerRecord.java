@@ -13,11 +13,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerRecord {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class AnswerRecord extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "response_id")
     private SurveyResponse response;
