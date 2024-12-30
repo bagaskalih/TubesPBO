@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers(new AntPathRequestMatcher("/api/users/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/categories")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/api/surveys/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api/rankings/**")).permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(basic -> basic.disable())
