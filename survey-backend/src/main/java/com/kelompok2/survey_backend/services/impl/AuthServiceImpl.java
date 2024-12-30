@@ -4,6 +4,8 @@ import com.kelompok2.survey_backend.dto.AuthResponseDto;
 import com.kelompok2.survey_backend.dto.LoginRequestDto;
 import com.kelompok2.survey_backend.dto.RegisterRequestDto;
 import com.kelompok2.survey_backend.model.User;
+import com.kelompok2.survey_backend.model.UserProfile;
+import com.kelompok2.survey_backend.repositories.UserProfileRepository;
 import com.kelompok2.survey_backend.repositories.UserRepository;
 import com.kelompok2.survey_backend.services.AuthService;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private UserRepository userRepository;
+    private UserProfileRepository userProfileRepository;
     private PasswordEncoder passwordEncoder;
 
     @Override
@@ -30,8 +33,20 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(registerDto.getUsername());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         user.setRole(registerDto.getRole());
-
         User savedUser = userRepository.save(user);
+
+        // Create user profile
+        UserProfile profile = new UserProfile();
+        profile.setUser(savedUser);
+        profile.setFullName(registerDto.getFullName());
+        profile.setEmail(registerDto.getEmail());
+        profile.setPhone(registerDto.getPhone());
+        profile.setAddress(registerDto.getAddress());
+        profile.setOccupation(registerDto.getOccupation());
+        profile.setEducation(registerDto.getEducation());
+        profile.setBirthDate(registerDto.getBirthDate());
+        profile.setGender(registerDto.getGender());
+        userProfileRepository.save(profile);
 
         return new AuthResponseDto(
                 savedUser.getId(),

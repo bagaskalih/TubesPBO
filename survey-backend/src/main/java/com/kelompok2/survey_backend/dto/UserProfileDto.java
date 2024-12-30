@@ -1,17 +1,17 @@
 package com.kelompok2.survey_backend.dto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequestDto {
+public class UserProfileDto {
+    private Long id;
     private String username;
-    private String password;
-    private String role;
     private String fullName;
     private String email;
     private String phone;
@@ -20,4 +20,7 @@ public class RegisterRequestDto {
     private String education;
     private String birthDate;
     private String gender;
+    private String role;
+    private int surveysCompleted;
+    private LocalDateTime lastActive;
 }
