@@ -22,12 +22,12 @@ public class RankingServiceImpl implements RankingService {
     @Override
     public List<RankingDto> getRankings() {
         return userRepository.findAll().stream()
-                .filter(user -> !"admin".equalsIgnoreCase(user.getUsername())) // Filter out admin
                 .map(user -> {
                     List<SurveyResponse> responses = responseRepository.findByUserId(user.getId());
                     return new RankingDto(
                             user.getUsername(),
-                            responses.size()
+                            responses.size(),
+                            calculateCompletionRate(responses)
                     );
                 })
                 .sorted(Comparator.comparing(RankingDto::getTotalResponses).reversed())
@@ -46,5 +46,13 @@ public class RankingServiceImpl implements RankingService {
         return stats.entrySet().stream()
                 .map(entry -> new CategoryStatsDto(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    private double calculateCompletionRate(List<SurveyResponse> responses) {
+        if (responses.isEmpty()) return 0.0;
+        long completed = responses.stream()
+                .filter(r -> r.getCompletedAt() != null)
+                .count();
+        return (double) completed / responses.size();
     }
 }

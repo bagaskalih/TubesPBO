@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class RankingDto {
     private String username;
     private int totalResponses;
+    private double completionRate;
 }
