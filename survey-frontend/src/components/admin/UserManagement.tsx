@@ -135,7 +135,7 @@ const UserManagement: React.FC<UserManagementProps> = ({ username, role }) => {
     <MainLayout username={username} role={role}>
       <Box sx={{ p: 3 }}>
         <Typography variant="h4" gutterBottom>
-          User Management
+          Account Management
         </Typography>
 
         <TableContainer component={Paper}>

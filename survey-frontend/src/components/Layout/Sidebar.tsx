@@ -17,7 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const drawerWidth = 240;
+const drawerWidth = 250;
 
 const Sidebar = () => {
   const [userRole, setUserRole] = useState<string>("");
@@ -44,9 +44,14 @@ const Sidebar = () => {
     ...(userRole === "ADMIN"
       ? [
           {
-            text: "User Management",
+            text: "Account Management",
             icon: <PeopleIcon />,
             path: "/admin/users",
+          },
+          {
+            text: "User Profiles",
+            icon: <PeopleIcon />,
+            path: "/admin/users/profiles",
           },
           {
             text: "Survey Management",
