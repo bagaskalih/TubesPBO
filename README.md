@@ -1,13 +1,13 @@
 # Survey Application
 
-A comprehensive survey management system built with Spring Boot and React that allows creating, managing, and analyzing surveys.
+A comprehensive survey management system built with Spring Boot and React that allows creating, managing, and analyzing surveys. Made for the Object-Oriented Programming course at Telkom University.
 
 ## Contributors
 
 - Bagas Kalih Putra (1303220149)
-- Farell Kresnanda 1303220118
-- ⁠Muhammad Zikra Fadly 1303223073
-- ⁠Ragil Deantika Rohmaniar 1303223052
+- Farell Kresnanda (1303220118)
+- ⁠Muhammad Zikra Fadly (1303223073)
+- ⁠Ragil Deantika Rohmaniar (1303223052)
 
 ## Technologies Used
 
