@@ -41,7 +41,7 @@ const Dashboard: React.FC = () => {
 
         // Fetch survey statistics
         const statsResponse = await axios.get(
-          `http://localhost:8081/api/surveys/stats/${userId}`
+          `http://localhost:8081/api/surveys/user-stats/${userId}`
         );
         setStats(statsResponse.data);
         setLoading(false);
