@@ -19,6 +19,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import MainLayout from "../Layout/MainLayout";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 interface Question {
   id: number;
@@ -50,7 +51,7 @@ const TakeSurvey: React.FC<TakeSurveyProps> = ({ username, role }) => {
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [timer, setTimer] = useState<number>(0);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-
+  const { showSnackbar } = useSnackbar();
   useEffect(() => {
     fetchSurvey();
   }, [id]);
@@ -64,6 +65,7 @@ const TakeSurvey: React.FC<TakeSurveyProps> = ({ username, role }) => {
         setTimer((prevTimer) => {
           if (prevTimer <= 1) {
             clearInterval(interval);
+            showSnackbar("Time's up!", "error");
             submitSurvey();
             return 0;
           }

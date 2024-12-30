@@ -36,7 +36,7 @@ interface SurveyListProps {
 }
 
 const SurveyList: React.FC<SurveyListProps> = ({ username, role }) => {
-  const [surveys, setSurveys] = useState<Survey[]>([]);
+  const [availableSurveys, setAvailableSurveys] = useState<Survey[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const navigate = useNavigate();
@@ -47,20 +47,30 @@ const SurveyList: React.FC<SurveyListProps> = ({ username, role }) => {
 
   const fetchData = async () => {
     try {
-      const [surveysRes, categoriesRes] = await Promise.all([
+      const userId = localStorage.getItem("id");
+      const [surveysRes, categoriesRes, completedRes] = await Promise.all([
         axios.get("http://localhost:8081/api/surveys"),
         axios.get("http://localhost:8081/api/categories"),
+        axios.get(`http://localhost:8081/api/surveys/responses/user/${userId}`),
       ]);
-      setSurveys(surveysRes.data);
       setCategories(categoriesRes.data);
+      setAvailableSurveys(
+        surveysRes.data.filter(
+          (survey: Survey) =>
+            !completedRes.data.some(
+              (response: { surveyId: number }) =>
+                response.surveyId === survey.id
+            )
+        )
+      );
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
   const getFilteredSurveys = () => {
-    if (selectedCategory === "all") return surveys;
-    return surveys.filter(
+    if (selectedCategory === "all") return availableSurveys;
+    return availableSurveys.filter(
       (survey) => survey.categoryId === parseInt(selectedCategory)
     );
   };
