@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, Button, Container, Paper } from "@mui/material";
-import { Assessment, People, Timer } from "@mui/icons-material";
+import { Assignment, People, Timer } from "@mui/icons-material";
 import MainLayout from "./Layout/MainLayout";
 import { useNavigate } from "react-router-dom";
 
@@ -33,7 +33,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ username, role }) => {
           }}
         >
           <Paper elevation={3} sx={{ p: 3, width: 300 }}>
-            <Assessment sx={{ fontSize: 40, color: "primary.main", mb: 2 }} />
+            <Assignment sx={{ fontSize: 40, color: "primary.main", mb: 2 }} />
             <Typography variant="h6" gutterBottom>
               Diverse Survey Categories
             </Typography>

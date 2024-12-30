@@ -10,8 +10,9 @@ import {
 } from "@mui/material";
 import {
   Dashboard as DashboardIcon,
-  Assessment as SurveyIcon,
+  Assignment as SurveyIcon,
   People as PeopleIcon,
+  Leaderboard as LeaderboardIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -50,6 +51,7 @@ const Sidebar = () => {
           },
         ]
       : [{ text: "Surveys", icon: <SurveyIcon />, path: "/surveys" }]),
+    { text: "Rankings", icon: <LeaderboardIcon />, path: "/rankings" },
   ];
 
   return (
