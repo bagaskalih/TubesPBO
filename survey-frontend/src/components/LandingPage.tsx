@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography, Button, Container, Paper } from "@mui/material";
 import { Assessment, People, Timer } from "@mui/icons-material";
 import MainLayout from "./Layout/MainLayout";
+import { useNavigate } from "react-router-dom";
 
 interface LandingPageProps {
   username: string;
@@ -9,6 +10,7 @@ interface LandingPageProps {
 }
 
 const LandingPage: React.FC<LandingPageProps> = ({ username, role }) => {
+  const navigate = useNavigate();
   return (
     <MainLayout username={username} role={role}>
       <Container maxWidth="lg">
@@ -16,12 +18,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ username, role }) => {
           <Typography variant="h3" component="h1" gutterBottom align="center">
             Welcome to Survey Application
           </Typography>
-          <Typography
-            variant="h5"
-            align="center"
-            color="textSecondary"
-            paragraph
-          >
+          <Typography variant="h5" align="center" color="textSecondary">
             A comprehensive platform for creating and participating in surveys
           </Typography>
         </Box>
@@ -73,7 +70,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ username, role }) => {
           <Button
             variant="contained"
             size="large"
-            href={role === "ADMIN" ? "/surveys" : "/available-surveys"}
+            onClick={() =>
+              navigate(role === "ADMIN" ? "/admin/surveys" : "/surveys")
+            }
           >
             {role === "ADMIN" ? "Manage Surveys" : "Start Taking Surveys"}
           </Button>
