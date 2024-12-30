@@ -17,6 +17,7 @@ import { SnackbarProvider } from "./context/SnackbarContext";
 import SurveyList from "./components/user/SurveyList";
 import TakeSurvey from "./components/user/TakeSurvey";
 import SurveyHistory from "./components/user/SurveyHistory";
+import Rankings from "./components/Rankings";
 
 interface User {
   username: string;
@@ -139,7 +140,7 @@ const App: React.FC = () => {
               )
             }
           />
-          {/* <Route
+          <Route
             path="/rankings"
             element={
               user ? (
@@ -148,7 +149,7 @@ const App: React.FC = () => {
                 <Navigate to="/login" />
               )
             }
-          /> */}
+          />
         </Routes>
       </Router>
     </SnackbarProvider>
