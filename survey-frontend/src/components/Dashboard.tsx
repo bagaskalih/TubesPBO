@@ -151,7 +151,7 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate("/users")}
+              onClick={() => navigate("/admin/users")}
               sx={{ mt: 2 }}
             >
               Manage Users
