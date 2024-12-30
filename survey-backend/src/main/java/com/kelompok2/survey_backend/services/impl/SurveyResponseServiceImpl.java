@@ -137,4 +137,31 @@ public class SurveyResponseServiceImpl implements SurveyResponseService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<ResponseDetailDto> getSurveyResponses(Long surveyId) {
+        List<SurveyResponse> responses = responseRepository.findBySurveyId(surveyId);
+
+        return responses.stream()
+                .map(response -> {
+                    List<AnswerDetailDto> answerDetails = response.getAnswers().stream()
+                            .map(answer -> new AnswerDetailDto(
+                                    answer.getQuestion().getId(),
+                                    answer.getQuestion().getQuestionText(),
+                                    answer.getAnswerText(),
+                                    answer.getSelectedOption() != null ? answer.getSelectedOption().getId() : null,
+                                    answer.getSelectedOption() != null ? answer.getSelectedOption().getOptionText() : null
+                            ))
+                            .collect(Collectors.toList());
+
+                    return new ResponseDetailDto(
+                            response.getId(),
+                            response.getUser().getId(),
+                            response.getUser().getUsername(),
+                            response.getCompletedAt(),
+                            answerDetails
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 }

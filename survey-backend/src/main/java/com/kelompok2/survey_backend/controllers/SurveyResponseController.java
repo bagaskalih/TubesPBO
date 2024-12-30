@@ -1,5 +1,6 @@
 package com.kelompok2.survey_backend.controllers;
 
+import com.kelompok2.survey_backend.dto.ResponseDetailDto;
 import com.kelompok2.survey_backend.dto.SurveyDto;
 import com.kelompok2.survey_backend.dto.SurveyResponseDto;
 import com.kelompok2.survey_backend.services.SurveyResponseService;
@@ -38,5 +39,10 @@ public class SurveyResponseController {
             @PathVariable Long userId) {
         boolean completed = surveyResponseService.hasUserCompletedSurvey(userId, surveyId);
         return new ResponseEntity<>(completed, HttpStatus.OK);
+    }
+
+    @GetMapping("/{surveyId}/responses")
+    public ResponseEntity<List<ResponseDetailDto>> getSurveyResponses(@PathVariable Long surveyId) {
+        return ResponseEntity.ok(surveyResponseService.getSurveyResponses(surveyId));
     }
 }

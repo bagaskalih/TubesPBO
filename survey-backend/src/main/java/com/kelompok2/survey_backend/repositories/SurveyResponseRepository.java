@@ -14,4 +14,6 @@ public interface SurveyResponseRepository extends JpaRepository<SurveyResponse, 
     List<SurveyResponse> findByUserId(Long userId);
     List<SurveyResponse> findBySurveyId(Long surveyId);
     Integer countBySurveyId(Long id);
+    long countByUserId(Long id);
+
 }
