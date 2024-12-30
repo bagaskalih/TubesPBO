@@ -15,13 +15,18 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Snackbar,
-  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Rating,
 } from "@mui/material";
-import { Edit, Delete, Add } from "@mui/icons-material";
+import { Edit, Delete, Add, Assessment, Visibility } from "@mui/icons-material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../Layout/MainLayout";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { format } from "date-fns";
 
 interface Survey {
   id: number;
@@ -30,6 +35,25 @@ interface Survey {
   categoryId: number;
   responseCount: number;
   createdAt: string;
+  questions: Array<{
+    id: number;
+    questionText: string;
+    questionType: string;
+  }>;
+}
+
+interface SurveyResponse {
+  id: number;
+  userId: number;
+  username: string;
+  completedAt: string;
+  answers: Array<{
+    questionId: number;
+    questionText: string;
+    answerText?: string;
+    selectedOptionId?: number;
+    selectedOptionText?: string;
+  }>;
 }
 
 interface Category {
@@ -49,17 +73,20 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [responsesDialogOpen, setResponsesDialogOpen] = useState(false);
+  const [responseDetailDialogOpen, setResponseDetailDialogOpen] =
+    useState(false);
+  const [selectedResponse, setSelectedResponse] =
+    useState<SurveyResponse | null>(null);
+
+  const [selectedSurveyResponses, setSelectedSurveyResponses] = useState<
+    SurveyResponse[]
+  >([]);
+  const [viewingSurvey, setViewingSurvey] = useState<Survey | null>(null);
   const [sortBy, setSortBy] = useState<string>("newest");
   const navigate = useNavigate();
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success" as "success" | "error",
-  });
 
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     fetchSurveys();
@@ -84,23 +111,51 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
     }
   };
 
+  const handleViewResponses = async (survey: Survey) => {
+    try {
+      const [surveyDetails, responses] = await Promise.all([
+        axios.get(`http://localhost:8081/api/surveys/${survey.id}`),
+        axios.get(`http://localhost:8081/api/surveys/${survey.id}/responses`),
+      ]);
+
+      setSelectedSurveyResponses(responses.data);
+      setViewingSurvey({ ...survey, ...surveyDetails.data });
+      setResponsesDialogOpen(true);
+    } catch (error) {
+      console.error("Error fetching survey responses:", error);
+      showSnackbar("Error fetching responses", "error");
+    }
+  };
+
+  const handleViewResponseDetail = (response: SurveyResponse) => {
+    setSelectedResponse(response);
+    setResponseDetailDialogOpen(true);
+  };
+
+  const getAnswerDisplay = (answer: any, questionType: string) => {
+    switch (questionType) {
+      case "MULTIPLE_CHOICE":
+        return answer.selectedOptionText || "No answer";
+
+      case "RATING":
+        return (
+          <Rating value={Number(answer.answerText)} readOnly size="small" />
+        );
+
+      default:
+        return answer.answerText || "No answer";
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (window.confirm("Are you sure you want to delete this survey?")) {
       try {
         await axios.delete(`http://localhost:8081/api/surveys/${id}`);
         fetchSurveys();
-        setSnackbar({
-          open: true,
-          message: "Survey deleted successfully",
-          severity: "success",
-        });
+        showSnackbar("Survey deleted successfully", "success");
       } catch (error) {
         console.error("Error deleting survey:", error);
-        setSnackbar({
-          open: true,
-          message: "Error deleting survey",
-          severity: "error",
-        });
+        showSnackbar("Error deleting survey", "error");
       }
     }
   };
@@ -208,6 +263,13 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
                     >
                       <Delete />
                     </IconButton>
+                    <IconButton
+                      onClick={() => handleViewResponses(survey)}
+                      color="primary"
+                      title="View Responses"
+                    >
+                      <Assessment />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -215,16 +277,100 @@ const SurveyManagement: React.FC<SurveyManagementProps> = ({
           </Table>
         </TableContainer>
       </Box>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      <Dialog
+        open={responsesDialogOpen}
+        onClose={() => setResponsesDialogOpen(false)}
+        maxWidth="lg"
+        fullWidth
       >
-        <Alert severity={snackbar.severity} onClose={handleCloseSnackbar}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+        <DialogTitle>
+          {viewingSurvey?.title} - Responses ({selectedSurveyResponses.length})
+        </DialogTitle>
+        <DialogContent>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>User</TableCell>
+                  <TableCell>Completion Date</TableCell>
+                  <TableCell align="right">View Details</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {selectedSurveyResponses.map((response) => (
+                  <TableRow key={response.id}>
+                    <TableCell>{response.username}</TableCell>
+                    <TableCell>
+                      {format(new Date(response.completedAt), "PPp")}
+                    </TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        onClick={() => handleViewResponseDetail(response)}
+                      >
+                        <Visibility />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setResponsesDialogOpen(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={responseDetailDialogOpen}
+        onClose={() => setResponseDetailDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          Response Details - {selectedResponse?.username}
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="subtitle2" color="textSecondary" gutterBottom>
+            Completed on:{" "}
+            {selectedResponse &&
+              format(new Date(selectedResponse.completedAt), "PPp")}
+          </Typography>
+
+          <TableContainer component={Paper} sx={{ mt: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Question</TableCell>
+                  <TableCell>Answer</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {viewingSurvey?.questions.map((question) => {
+                  const answer = selectedResponse?.answers.find(
+                    (a) => a.questionId === question.id
+                  );
+
+                  return (
+                    <TableRow key={question.id}>
+                      <TableCell>{question.questionText}</TableCell>
+                      <TableCell>
+                        {answer
+                          ? getAnswerDisplay(answer, question.questionType)
+                          : "No answer provided"}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setResponseDetailDialogOpen(false)}>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </MainLayout>
   );
 };
