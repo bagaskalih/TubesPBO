@@ -27,6 +27,7 @@ import MainLayout from "./Layout/MainLayout";
 interface RankingData {
   username: string;
   totalResponses: number;
+  completionRate: number;
 }
 
 interface CategoryStats {
@@ -124,6 +125,7 @@ const Rankings: React.FC<RankingProps> = ({ username, role }) => {
                   <TableRow>
                     <TableCell>Rank</TableCell>
                     <TableCell>Username</TableCell>
+                    <TableCell align="right">Completion Rate (%)</TableCell>
                     <TableCell align="right">Surveys Completed</TableCell>
                   </TableRow>
                 </TableHead>
@@ -132,6 +134,7 @@ const Rankings: React.FC<RankingProps> = ({ username, role }) => {
                     <TableRow key={user.username}>
                       <TableCell>{index + 1}</TableCell>
                       <TableCell>{user.username}</TableCell>
+                      <TableCell align="right">{`${(user.completionRate * 100).toFixed(1)}%`}</TableCell>
                       <TableCell align="right">{user.totalResponses}</TableCell>
                     </TableRow>
                   ))}
