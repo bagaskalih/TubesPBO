@@ -1,4 +1,3 @@
-// survey-frontend/src/components/UserDashboard.tsx
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -19,7 +18,7 @@ interface SurveyStats {
   availableSurveys: number;
 }
 
-const UserDashboard: React.FC = () => {
+const Dashboard: React.FC = () => {
   const [stats, setStats] = useState<SurveyStats>({
     totalSurveys: 0,
     completedSurveys: 0,
@@ -182,4 +181,4 @@ const AdminDashboardContent: React.FC<AdminDashboardContentProps> = ({
   );
 };
 
-export default UserDashboard;
+export default Dashboard;
