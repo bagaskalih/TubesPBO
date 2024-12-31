@@ -50,7 +50,7 @@ A comprehensive survey management system built with Spring Boot and React that a
 ## Project Structure
 
 ### Backend
-
+```
 survey-backend/
 ├── src/main/java/com/kelompok2/survey_backend/
 │ ├── config/
@@ -61,9 +61,9 @@ survey-backend/
 │ ├── model/
 │ ├── repositories/
 │ └── services/
-
+```
 ### Frontend
-
+```
 survey-frontend/
 ├── src/
 │ ├── api/
@@ -75,7 +75,7 @@ survey-frontend/
 │ │ └── Layout/
 │ ├── context/
 │ ├── types/
-
+```
 ## Getting Started
 
 1. Database Setup
