@@ -67,12 +67,52 @@ const UserManagement: React.FC<UserManagementProps> = ({ username, role }) => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("http://localhost:8081/api/admin/users");
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+
+      console.log("Current token:", token); // Debug log
+      console.log("Current role:", role); // Debug log
+
+      if (!token) {
+        console.log("No token found, redirecting to login"); // Debug log
+        showSnackbar("Not authenticated. Please login again.", "error");
+        window.location.href = "/login";
+        return;
+      }
+
+      if (role !== "ADMIN") {
+        console.log("User is not admin, redirecting"); // Debug log
+        showSnackbar("Unauthorized access", "error");
+        window.location.href = "/";
+        return;
+      }
+
+      const response = await axios.get(
+        "http://localhost:8081/api/admin/users",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Users response:", response.data); // Debug log
       setUsers(response.data);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
-      showSnackbar("Error loading users", "error");
+      if (axios.isAxiosError(error)) {
+        console.log("Response status:", error.response?.status); // Debug log
+        console.log("Response data:", error.response?.data); // Debug log
+
+        if (error.response?.status === 403 || error.response?.status === 401) {
+          showSnackbar("Session expired. Please login again", "error");
+          localStorage.clear();
+          window.location.href = "/login";
+        } else {
+          showSnackbar("Error loading users", "error");
+        }
+      }
       setLoading(false);
     }
   };
@@ -91,9 +131,15 @@ const UserManagement: React.FC<UserManagementProps> = ({ username, role }) => {
     if (!selectedUser) return;
 
     try {
+      const token = localStorage.getItem("token");
       await axios.put(
         `http://localhost:8081/api/admin/users/${selectedUser.id}`,
-        editData
+        editData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       showSnackbar("User updated successfully", "success");
       setEditDialogOpen(false);
@@ -111,7 +157,12 @@ const UserManagement: React.FC<UserManagementProps> = ({ username, role }) => {
   const handleDelete = async (userId: number) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
-        await axios.delete(`http://localhost:8081/api/admin/users/${userId}`);
+        const token = localStorage.getItem("token");
+        await axios.delete(`http://localhost:8081/api/admin/users/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         showSnackbar("User deleted successfully", "success");
         fetchUsers();
       } catch (error) {

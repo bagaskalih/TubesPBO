@@ -6,7 +6,10 @@ export interface AuthData {
 
 export interface AuthResponse {
   id: string;
+  username: string;
   role: string;
+  token?: string;
+  message?: string;
 }
 
 export interface AuthError {

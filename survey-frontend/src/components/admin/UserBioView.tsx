@@ -59,8 +59,14 @@ const UserBioView: React.FC<UserBioViewProps> = ({ username, role }) => {
 
   const fetchUsers = async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:8081/api/admin/users/profiles"
+        "http://localhost:8081/api/admin/users/profiles",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setUsers(response.data);
       setLoading(false);

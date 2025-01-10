@@ -32,6 +32,8 @@ const LoginPage = () => {
     try {
       const response = await login(formData);
       localStorage.setItem("id", response.id);
+      localStorage.setItem("username", response.username);
+      localStorage.setItem("role", response.role);
       window.location.href = "/";
     } catch (error) {
       if (error instanceof AxiosError && error.response?.data) {
