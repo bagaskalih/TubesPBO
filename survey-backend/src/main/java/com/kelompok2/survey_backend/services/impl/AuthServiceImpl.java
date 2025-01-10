@@ -8,6 +8,7 @@ import com.kelompok2.survey_backend.model.UserProfile;
 import com.kelompok2.survey_backend.repositories.UserProfileRepository;
 import com.kelompok2.survey_backend.repositories.UserRepository;
 import com.kelompok2.survey_backend.services.AuthService;
+import com.kelompok2.survey_backend.services.JwtService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -20,6 +21,7 @@ public class AuthServiceImpl implements AuthService {
     private UserRepository userRepository;
     private UserProfileRepository userProfileRepository;
     private PasswordEncoder passwordEncoder;
+    private JwtService jwtService;
 
     @Override
     public AuthResponseDto register(RegisterRequestDto registerDto) {
@@ -58,20 +60,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponseDto login(LoginRequestDto loginDto) {
-        // Find user by username
         User user = userRepository.findByUsername(loginDto.getUsername())
                 .orElseThrow(() -> new BadCredentialsException("Invalid credentials"));
 
-        // Verify password
         if (!passwordEncoder.matches(loginDto.getPassword(), user.getPassword())) {
             throw new BadCredentialsException("Invalid credentials");
         }
 
+        String token = jwtService.generateToken(user.getUsername(), user.getRole());
+        
         return new AuthResponseDto(
                 user.getId(),
                 user.getUsername(),
                 user.getRole(),
-                "Login successful"
+                token
         );
     }
 }
